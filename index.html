@@ -9,16 +9,21 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <h1>Fitness Studio Web App</h1>
-
-    <p>
-      This is the MVP for a fitness studio app.
-      Clients and coaches will sign in with Google.
-    </p>
-
-    <button id="loginBtn">Login</button>
-
-    <!-- Link JS -->
+    <header class="app-header">
+      <h1>Fitness Studio App</h1>
+      <nav>
+        <button id="loginBtn">Login</button>
+        <button id="logoutBtn" hidden>Logout</button>
+      </nav>
+    </header>
+  
+    <main id="app">
+      <section id="homeScreen">
+        <h2>Welcome</h2>
+        <p>Please sign in to continue.</p>
+      </section>
+    </main>
+  
     <script src="app.js"></script>
   </body>
 </html>
