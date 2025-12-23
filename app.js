@@ -1,8 +1,11 @@
-console.log("App loaded");
-
 const loginBtn = document.getElementById("loginBtn");
+const logoutBtn = document.getElementById("logoutBtn");
 
 loginBtn.addEventListener("click", () => {
-  alert("Login clicked (real auth coming later)");
+  alert("Login coming next lesson");
+});
+
+logoutBtn.addEventListener("click", () => {
+  alert("Logout coming next lesson");
 });
 
