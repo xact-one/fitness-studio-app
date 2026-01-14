@@ -1,8 +1,13 @@
 // --- Firebase (CDN / Modular SDK) ---
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.0/firebase-app.js";
-import { getAuth } from "https://www.gstatic.com/firebasejs/11.9.0/firebase-auth.js";
+import {
+  getAuth,
+  GoogleAuthProvider,
+  signInWithPopup,
+  signOut,
+  onAuthStateChanged,
+} from "https://www.gstatic.com/firebasejs/11.9.0/firebase-auth.js";
 
-// TODO: paste YOUR config here (from Firebase Console → Project settings → Your apps)
 const firebaseConfig = {
   apiKey: "AIzaSyBVhaCM-3gN5LfjmFriW4dUr_FY5lCGjc8",
   authDomain: "fitness-studio-app-011426.firebaseapp.com",
@@ -14,6 +19,8 @@ const firebaseConfig = {
 
 const firebaseApp = initializeApp(firebaseConfig);
 const auth = getAuth(firebaseApp);
+const provider = new GoogleAuthProvider();
+
 
 // Optional: quick sanity check in console
 console.log("Firebase initialized ✅", { projectId: firebaseConfig.projectId });
@@ -31,6 +38,18 @@ const state = {
   // later we'll add: role: "client" | "coach"
 };
 
+onAuthStateChanged(auth, (user) => {
+  state.user = user
+    ? {
+        uid: user.uid,
+        displayName: user.displayName || "User",
+        email: user.email || "",
+      }
+    : null;
+
+  render();
+});
+
 // --- Render (UI should match state) ---
 function render() {
   const isLoggedIn = !!state.user;
@@ -44,23 +63,30 @@ function render() {
   dashboardScreen.hidden = !isLoggedIn;
 }
 
-// --- Fake auth actions (for now) ---
-function fakeLogin() {
-  state.user = {
-    uid: "demo-uid-123",
-    displayName: "Demo User",
-  };
-  render();
+// --- Auth actions ---
+async function login() {
+  try {
+    await signInWithPopup(auth, provider);
+    // state will be set via onAuthStateChanged below
+  } catch (err) {
+    console.error("Login failed:", err);
+    alert(err?.message || "Login failed");
+  }
 }
 
-function fakeLogout() {
-  state.user = null;
-  render();
+async function logout() {
+  try {
+    await signOut(auth);
+  } catch (err) {
+    console.error("Logout failed:", err);
+    alert(err?.message || "Logout failed");
+  }
 }
+
 
 // --- Events ---
-loginBtn.addEventListener("click", fakeLogin);
-logoutBtn.addEventListener("click", fakeLogout);
+loginBtn.addEventListener("click", login);
+logoutBtn.addEventListener("click", logout);
 
 // First paint
 render();
