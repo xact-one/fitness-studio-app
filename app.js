@@ -1,3 +1,23 @@
+// --- Firebase (CDN / Modular SDK) ---
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.0/firebase-app.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/11.9.0/firebase-auth.js";
+
+// TODO: paste YOUR config here (from Firebase Console → Project settings → Your apps)
+const firebaseConfig = {
+  apiKey: "AIzaSyBVhaCM-3gN5LfjmFriW4dUr_FY5lCGjc8",
+  authDomain: "fitness-studio-app-011426.firebaseapp.com",
+  projectId: "fitness-studio-app-011426",
+  storageBucket: "fitness-studio-app-011426.firebasestorage.app",
+  messagingSenderId: "414578518778",
+  appId: "1:414578518778:web:b58aa8ecf06eb063c2f743"
+};
+
+const firebaseApp = initializeApp(firebaseConfig);
+const auth = getAuth(firebaseApp);
+
+// Optional: quick sanity check in console
+console.log("Firebase initialized ✅", { projectId: firebaseConfig.projectId });
+
 // --- Elements ---
 const loginBtn = document.getElementById("loginBtn");
 const logoutBtn = document.getElementById("logoutBtn");
