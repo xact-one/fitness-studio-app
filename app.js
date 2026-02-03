@@ -28,6 +28,7 @@ console.log("Firebase initialized ✅", { projectId: firebaseConfig.projectId })
 const loginBtn = document.getElementById("loginBtn");
 const logoutBtn = document.getElementById("logoutBtn");
 
+const loadingScreen = document.getElementById("loadingScreen");
 const homeScreen = document.getElementById("homeScreen");
 const dashboardScreen = document.getElementById("dashboardScreen");
 
@@ -38,9 +39,12 @@ const toastEl = document.getElementById("toast");
 const state = {
   user: null, // null means "logged out"
   toast: "", // one-line status message
+  authReady: false, // NEW: becomes true after Firebase finishes initial session check
   // later we'll add: role: "client" | "coach"
 };
 
+// Firebase tells us initial auth state + future changes here.
+// IMPORTANT: this is what removes first-load flicker.
 onAuthStateChanged(auth, (user) => {
   state.user = user
     ? {
@@ -50,11 +54,32 @@ onAuthStateChanged(auth, (user) => {
       }
     : null;
 
+  state.authReady = true;
   render();
 });
 
 // --- Render (UI should match state) ---
 function render() {
+  // Loading phase: we don't yet know if user is signed in
+  if (!state.authReady) {
+    // Hide nav actions while checking
+    loginBtn.hidden = true;
+    logoutBtn.hidden = true;
+
+    // Screens
+    loadingScreen.hidden = false;
+    homeScreen.hidden = true;
+    dashboardScreen.hidden = true;
+
+    // Toast (optional: keep it hidden during loading)
+    toastEl.hidden = true;
+    toastEl.textContent = "";
+
+    // Safety: clear dashboard line (avoids stale text if you hot-reload locally)
+    userLine.textContent = "";
+    return;
+  }
+
   const isLoggedIn = !!state.user;
 
   // Header buttons
@@ -62,6 +87,7 @@ function render() {
   logoutBtn.hidden = !isLoggedIn;
 
   // Screens
+  loadingScreen.hidden = true;
   homeScreen.hidden = isLoggedIn;
   dashboardScreen.hidden = !isLoggedIn;
 
@@ -75,6 +101,10 @@ function render() {
   // Toast
   toastEl.hidden = !state.toast;
   toastEl.textContent = state.toast;
+
+  // Nice polish: disable buttons if hidden (avoids focus weirdness)
+  loginBtn.disabled = loginBtn.hidden;
+  logoutBtn.disabled = logoutBtn.hidden;
 }
 
 // --- Auth actions ---
@@ -110,5 +140,7 @@ async function logout() {
 loginBtn.addEventListener("click", login);
 logoutBtn.addEventListener("click", logout);
 
-// First paint
+// First paint: shows the loading screen immediately,
+// then onAuthStateChanged will flip authReady to true.
 render();
+
