@@ -16,22 +16,26 @@
         <button id="logoutBtn" hidden>Logout</button>
       </nav>
     </header>
-  
+
     <main id="app">
+      <p id="toast" class="toast" hidden></p>
+
       <section id="homeScreen">
         <h2>Welcome</h2>
         <p>Please sign in to continue.</p>
       </section>
-    
+
       <section id="dashboardScreen" hidden>
         <h2>Dashboard</h2>
-          <p id="userLine"></p>
-          <p class="muted">
-            You’re signed in. Next: we’ll add roles (coach vs client).
-          </p>
+
+        <p id="userLine"></p>
+
+        <p class="muted">
+          You’re signed in. Next: we’ll add roles (coach vs client).
+        </p>
       </section>
     </main>
-  
+
     <script type="module" src="app.js"></script>
   </body>
 </html>
