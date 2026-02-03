@@ -20,7 +20,13 @@
     <main id="app">
       <p id="toast" class="toast" hidden></p>
 
-      <section id="homeScreen">
+      <!-- NEW: loading / session check screen -->
+      <section id="loadingScreen">
+        <h2>Checking sign-in…</h2>
+        <p class="muted">One moment.</p>
+      </section>
+
+      <section id="homeScreen" hidden>
         <h2>Welcome</h2>
         <p>Please sign in to continue.</p>
       </section>
@@ -39,4 +45,5 @@
     <script type="module" src="app.js"></script>
   </body>
 </html>
+
 
