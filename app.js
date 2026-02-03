@@ -14,13 +14,12 @@ const firebaseConfig = {
   projectId: "fitness-studio-app-011426",
   storageBucket: "fitness-studio-app-011426.firebasestorage.app",
   messagingSenderId: "414578518778",
-  appId: "1:414578518778:web:b58aa8ecf06eb063c2f743"
+  appId: "1:414578518778:web:b58aa8ecf06eb063c2f743",
 };
 
 const firebaseApp = initializeApp(firebaseConfig);
 const auth = getAuth(firebaseApp);
 const provider = new GoogleAuthProvider();
-
 
 // Optional: quick sanity check in console
 console.log("Firebase initialized ✅", { projectId: firebaseConfig.projectId });
@@ -32,9 +31,13 @@ const logoutBtn = document.getElementById("logoutBtn");
 const homeScreen = document.getElementById("homeScreen");
 const dashboardScreen = document.getElementById("dashboardScreen");
 
+const userLine = document.getElementById("userLine");
+const toastEl = document.getElementById("toast");
+
 // --- App State (single source of truth) ---
 const state = {
   user: null, // null means "logged out"
+  toast: "", // one-line status message
   // later we'll add: role: "client" | "coach"
 };
 
@@ -61,13 +64,24 @@ function render() {
   // Screens
   homeScreen.hidden = isLoggedIn;
   dashboardScreen.hidden = !isLoggedIn;
+
+  // Dashboard user line
+  if (isLoggedIn) {
+    userLine.textContent = `Signed in as ${state.user.displayName} (${state.user.email})`;
+  } else {
+    userLine.textContent = "";
+  }
+
+  // Toast
+  toastEl.hidden = !state.toast;
+  toastEl.textContent = state.toast;
 }
 
 // --- Auth actions ---
 async function login() {
   try {
     await signInWithPopup(auth, provider);
-    // state will be set via onAuthStateChanged below
+    // state will be set via onAuthStateChanged
   } catch (err) {
     console.error("Login failed:", err);
     alert(err?.message || "Login failed");
@@ -77,12 +91,20 @@ async function login() {
 async function logout() {
   try {
     await signOut(auth);
+
+    // Nice UX: show a quick message
+    state.toast = "Signed out.";
+    render();
+
+    setTimeout(() => {
+      state.toast = "";
+      render();
+    }, 2000);
   } catch (err) {
     console.error("Logout failed:", err);
     alert(err?.message || "Logout failed");
   }
 }
-
 
 // --- Events ---
 loginBtn.addEventListener("click", login);
