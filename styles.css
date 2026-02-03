@@ -24,3 +24,14 @@ body {
 main {
   padding: 16px;
 }
+
+.toast {
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  margin-bottom: 12px;
+}
+
+.muted {
+  opacity: 0.75;
+}
